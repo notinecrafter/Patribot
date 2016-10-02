@@ -10,12 +10,16 @@ $chat_id = $telegram->ChatID();
 if ($text == "/patriotten" && $telegram->messageFromGroup()) {
 	$filename = "./mensies/" . $telegram->Username();
 	$tijdbestand = "./tijd/" . $telegram->Username();
+	
+	//kijken of de gebruiker al bestaat
 	if (file_exists($tijdbestand)) {
-		$oudetijd = file_get_contents($tijdbestand);
-		$nieuwetijd = $oudetijd + 5;
+		//de tijd waarop het weer kan, 5 seconden later dus
+		$nieuwetijd = file_get_contents($tijdbestand) + 5;
 		if (time() >= $nieuwetijd) {
+			//als de delay over is een nieuwe tijd schrijven naar bestand
 			file_put_contents($tijdbestand, time()) or die();
 		} else {
+			//anders gewoon niks doen
 			//$telegram->sendMessage(array('chat_id' => $chat_id, 'text' => "Niet zo snel.", 'reply_to_message_id' => $telegram->MessageID()));
 			die();
 		}
@@ -33,6 +37,7 @@ if ($text == "/patriotten" && $telegram->messageFromGroup()) {
 	file_put_contents($filename, $nieuwepunten) or die();
 	$telegram->sendMessage(array('chat_id' => $chat_id, 'text' => "Je hebt nu " . $nieuwepunten . " patriotjes!", 'reply_to_message_id' => $telegram->MessageID()));
 }
+
 else if ($text == "/patriotten" && !$telegram->messageFromGroup()) {
 	$telegram->sendMessage(array('chat_id' => $chat_id, 'text' => "Nee. Alleen in een groep.", 'reply_to_message_id' => $telegram->MessageID()));
 }
